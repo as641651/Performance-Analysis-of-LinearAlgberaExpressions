@@ -22,15 +22,15 @@ REPS = 5
 # log file
 f = open('logs/event_log.csv', 'w',encoding='UTF8')
 csv_writer = csv.writer(f)
-header = ['ID', 'Operation', 'Start time', 'Dims', 'Num Threads']
+header = ['ID', 'Operation', 'Start time', 'End time', 'Dims', 'Num Threads']
 csv_writer.writerow(header)
 
 # TODO move dimensions inside for loop and choose sampling strategy
-m = 500
-n = 500
-k = 500
-l = 500
-q = 500
+m = 3000
+n = 3000
+k = 3000
+l = 3000
+q = 3000
 
 A = tf.random.normal([m, n], dtype=DTYPE)
 B = tf.random.normal([n, k], dtype=DTYPE)
@@ -38,11 +38,43 @@ C = tf.random.normal([k, l], dtype=DTYPE)
 D = tf.random.normal([l, q], dtype=DTYPE)
 
 
-import variants.variant0 as v0
+import variants.variant1 as v1
+import variants.variant2 as v2
+import variants.variant3 as v3
+import variants.variant4 as v4
+import variants.variant5 as v5
+
+exp_start_time = tf.timestamp()
 
 for i in range(REPS):
-    Y,timestamps = v0.run(A,B,C,D)
-    v0.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+    Y,timestamps = v1.run(A,B,C,D)
+    v1.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+
+print("Variant 1 done")
+
+for i in range(REPS):
+    Y,timestamps = v2.run(A,B,C,D)
+    v2.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+
+print("Variant 2 done")
+
+for i in range(REPS):
+    Y,timestamps = v3.run(A,B,C,D)
+    v3.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+
+print("Variant 3 done")
+
+for i in range(REPS):
+    Y,timestamps = v4.run(A,B,C,D)
+    v4.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+
+print("Variant 4 done")
+
+for i in range(REPS):
+    Y,timestamps = v5.run(A,B,C,D)
+    v5.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+
+print("Variant 5 done")
 
 f.close()
 
