@@ -1,5 +1,8 @@
 import tensorflow as tf
 import csv
+import utils
+import post_process
+import time
 
 class bcolors:
     WARNING = '\033[93m'
@@ -12,15 +15,18 @@ print(bcolors.WARNING + "MKL Enabled : ", tff.test_util.IsMklEnabled(), bcolors.
 
 
 #Set threads
-NUM_THREADS = 1
+NUM_THREADS = 4
 tf.config.threading.set_inter_op_parallelism_threads(NUM_THREADS)
 tf.config.threading.set_intra_op_parallelism_threads(NUM_THREADS)
 tf.config.run_functions_eagerly(False)
 DTYPE = tf.float32
-REPS = 10
+REPS = 70
 
+
+event_log = 'logs/event_log-3.csv'
+deviations_log = 'logs/deviations-3.csv'
 # log file
-f = open('logs/event_log.csv', 'w',encoding='UTF8')
+f = open(event_log, 'w',encoding='UTF8')
 csv_writer = csv.writer(f)
 header = ['case:concept:name', 'concept:name', 'time:start', 'time:end', 'case:dims', 'case:threads']
 csv_writer.writerow(header)
@@ -44,38 +50,30 @@ import variants.variant3 as v3
 import variants.variant4 as v4
 import variants.variant5 as v5
 
+variants = [v1,
+            v2,
+            v3,
+            v4,
+            v5
+            ]
 
-for i in range(REPS):
-    Y,timestamps = v1.run(A,B,C,D)
-    v1.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+measurements_instance_set = utils.get_shuffled_measurements_instance_set(variants, REPS)
 
-print("Variant 1 done")
+c = 0
+for id, instance in measurements_instance_set:
 
-for i in range(REPS):
-    Y,timestamps = v2.run(A,B,C,D)
-    v2.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
+    c = c+1
+    #if c>100 and c <150:
+    #    time.sleep(0.1)
+    print(id, instance)
+    Y,timestamps = instance.run(A,B,C,D)
+    print(timestamps[-1] - timestamps[0])
+    instance.write_to_eventlog(csv_writer,id,timestamps,[m,n,k,l,q],NUM_THREADS)
 
-print("Variant 2 done")
-
-for i in range(REPS):
-    Y,timestamps = v3.run(A,B,C,D)
-    v3.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
-
-print("Variant 3 done")
-
-for i in range(REPS):
-    Y,timestamps = v4.run(A,B,C,D)
-    v4.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
-
-print("Variant 4 done")
-
-for i in range(REPS):
-    Y,timestamps = v5.run(A,B,C,D)
-    v5.write_to_eventlog(csv_writer,i,timestamps,[m,n,k,l,q],NUM_THREADS)
-
-print("Variant 5 done")
 
 f.close()
 
+variants_str = ['V1', 'V2', 'V3', 'V4', 'V5']
+post_process.add_duration_deviations(event_log,deviations_log,variants_str,0.6)
 
 

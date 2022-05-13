@@ -1,5 +1,6 @@
 import tensorflow as tf
 #import csv
+import utils
 
 
 @tf.function
@@ -27,18 +28,18 @@ def run(A,B,C,D):
     return (Y,timestamps)
     
 
-def write_to_eventlog(csv_writer,exp_start_time,run_id,timestamps,dims,num_threads):
+def write_to_eventlog(csv_writer,run_id,timestamps,dims,num_threads):
     id = "V5R"+str(run_id)
     #timestamps = [x*1e-9 for x in timestamps]
-    timestamps = timestamps - exp_start_time
+    #timestamps = timestamps - exp_start_time
 
-    event0 = [id, "matmul(A,B)", timestamps[0].numpy(), timestamps[1].numpy(), dims, num_threads]
+    event0 = [id, "matmul(A,B)", utils.convert_timestamp_todtime(timestamps[0].numpy()), utils.convert_timestamp_todtime(timestamps[1].numpy()), dims, num_threads]
     csv_writer.writerow(event0)
 
-    event1 = [id, "matmul(C,D)", timestamps[1].numpy(), timestamps[2].numpy(), dims, num_threads]
+    event1 = [id, "matmul(C,D)", utils.convert_timestamp_todtime(timestamps[1].numpy()), utils.convert_timestamp_todtime(timestamps[2].numpy()), dims, num_threads]
     csv_writer.writerow(event1)
 
-    event2 = [id, "matmul(T_AB,T_CD)", timestamps[2].numpy(), timestamps[3].numpy(), dims, num_threads]
+    event2 = [id, "matmul(T_AB,T_CD)", utils.convert_timestamp_todtime(timestamps[2].numpy()), utils.convert_timestamp_todtime(timestamps[3].numpy()), dims, num_threads]
     csv_writer.writerow(event2)
 
 
