@@ -13,7 +13,7 @@ def decimal_min_to_hh_mm_ss(decimal_min):
 if __name__ == "__main__":
 
     file_path = sys.argv[1]
-    new_file = file_path.split(".")[0] + "_processed." +file_path.split(".")[1]
+    new_file = file_path.split(".")[0] + "_processed." + file_path.split(".")[1]
 
     f1 = open(file_path, 'r',encoding='UTF8')
     f2 = open(new_file, 'w',encoding='UTF8')

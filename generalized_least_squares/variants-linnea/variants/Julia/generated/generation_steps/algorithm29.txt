@@ -1,0 +1,36 @@
+# cost 9.63e+09
+
+b = ((X^T M^-1 X)^-1 X^T M^-1 y)
+
+(L7 L7^T) = M                 # 5.21e+09
+
+b = ((X^T L7^-T L7^-1 X)^-1 X^T L7^-T L7^-1 y)
+
+tmp68 = (L7^-1 y)             # 6.25e+06
+
+b = ((X^T L7^-T L7^-1 X)^-1 X^T L7^-T tmp68)
+
+tmp57 = (X^T L7^-T)
+b = ((tmp57 tmp57^T)^-1 tmp57 tmp68)
+
+tmp12 = (L7^-1 X)             # 3.12e+09
+
+b = ((tmp12^T tmp12)^-1 tmp12^T tmp68)
+
+tmp14 = (tmp12^T tmp12)       # 6.25e+08
+
+b = (tmp14^-1 tmp12^T tmp68)
+
+(L15 L15^T) = tmp14           # 4.17e+07
+
+b = (L15^-T L15^-1 tmp12^T tmp68)
+
+tmp70 = (tmp12 L15^-T)        # 6.25e+08
+
+b = (L15^-T tmp70^T tmp68)
+
+tmp23 = (tmp70^T tmp68)       # 2.5e+06
+
+tmp24 = (L15^-T tmp23)        # 2.5e+05
+
+b = tmp24
