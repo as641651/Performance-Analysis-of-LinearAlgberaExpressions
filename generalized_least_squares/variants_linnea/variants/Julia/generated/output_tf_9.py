@@ -22,13 +22,13 @@ def run(X,M,y):
         stime2 = tf.timestamp()
 
     with tf.control_dependencies([stime2]):
-        ml2 = tf.matmul(tf.linalg.inv(ml1), ml2)
-    with tf.control_dependencies([ml2]):
+        ml3 = tf.matmul(tf.transpose(ml0), ml0)
+    with tf.control_dependencies([ml3]):
         stime3 = tf.timestamp()
 
     with tf.control_dependencies([stime3]):
-        ml3 = tf.matmul(tf.transpose(ml0), ml0)
-    with tf.control_dependencies([ml3]):
+        ml2 = tf.matmul(tf.linalg.inv(ml1), ml2)
+    with tf.control_dependencies([ml2]):
         stime4 = tf.timestamp()
 
     with tf.control_dependencies([stime4]):
@@ -58,38 +58,29 @@ def write_to_eventlog(csv_writer, exp_start_time, run_id, timestamps, dims, num_
     # timestamps = [x*1e-9 for x in timestamps]
     timestamps = timestamps - exp_start_time
 
-    event0 = [id, 1, timestamps[0].numpy(), timestamps[1].numpy(), dims, num_threads]
+    event0 = [id, "LAPACK.potrf", timestamps[0].numpy(), timestamps[1].numpy(), dims, num_threads]
     csv_writer.writerow(event0)
 
-    event1 = [id, 1, timestamps[1].numpy(), timestamps[2].numpy(), dims, num_threads]
+    event1 = [id, "trsm", timestamps[1].numpy(), timestamps[2].numpy(), dims, num_threads]
     csv_writer.writerow(event1)
 
-    event2 = [id, 1, timestamps[2].numpy(), timestamps[3].numpy(), dims, num_threads]
+    event2 = [id, "syrk", timestamps[2].numpy(), timestamps[3].numpy(), dims, num_threads]
     csv_writer.writerow(event2)
 
-    event3 = [id, 1, timestamps[3].numpy(), timestamps[4].numpy(), dims, num_threads]
+    event3 = [id, "trsv", timestamps[3].numpy(), timestamps[4].numpy(), dims, num_threads]
     csv_writer.writerow(event3)
 
-    event4 = [id, 1, timestamps[4].numpy(), timestamps[5].numpy(), dims, num_threads]
+    event4 = [id, "gemv", timestamps[4].numpy(), timestamps[5].numpy(), dims, num_threads]
     csv_writer.writerow(event4)
 
-    event5 = [id, 1, timestamps[5].numpy(), timestamps[6].numpy(), dims, num_threads]
+    event5 = [id, "gemv", timestamps[5].numpy(), timestamps[6].numpy(), dims, num_threads]
     csv_writer.writerow(event5)
 
-    event6 = [id, 1, timestamps[6].numpy(), timestamps[7].numpy(), dims, num_threads]
+    event6 = [id, "trsv", timestamps[6].numpy(), timestamps[7].numpy(), dims, num_threads]
     csv_writer.writerow(event6)
 
 
 
-    """event0 = [id, "matmul(A,B)", timestamps[0].numpy(), timestamps[1].numpy(), dims, num_threads]
-    csv_writer.writerow(event0)
-
-    event1 = [id, "matmul(T_AB,C)", timestamps[1].numpy(), timestamps[2].numpy(), dims, num_threads]
-    csv_writer.writerow(event1)
-
-    event2 = [id, "matmul(T_ABC,D)", timestamps[2].numpy(), timestamps[3].numpy(), dims, num_threads]
-    csv_writer.writerow(event2)
-    """
 
 
 

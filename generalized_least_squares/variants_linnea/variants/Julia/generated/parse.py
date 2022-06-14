@@ -17,7 +17,7 @@ def matmul_string_gemm(inp, out):
 
 
 def matmul_string_gemv(inp, out):
-    return "{out} = tf.matmul({inp1}.T, {inp2})".format(out=out, inp1=inp[0], inp2=inp[1])
+    return "{out} = tf.matmul(tf.transpose({inp1}), {inp2})".format(out=out, inp1=inp[0], inp2=inp[1])
 
 
 def matmul_string_trsm(inp, out):
@@ -36,10 +36,15 @@ def cholesky_string(inp, out):
     return "{out} = tf.linalg.cholesky({inp})".format(out=out, inp=inp)
 
 
-def event_log_activity_labels(stamp_id):
+def event_log_activity_labels(stamp_id, activity_name):
     code = ""
     code += offset
-    code += "event{} = [id, {}, timestamps[{}].numpy(), timestamps[{}].numpy(), dims, num_threads]".format(stamp_id, 1, stamp_id, stamp_id+1)
+    # code += "event{} = [id, "{}", timestamps[{}].numpy(), timestamps[{}].numpy(), dims, num_threads]".format(stamp_id, activity_name, stamp_id, stamp_id+1)
+    code += "event{} = [id, ".format(stamp_id)
+    code += '"'
+    code += activity_name
+    code += '"'
+    code += ", timestamps[{}].numpy(), timestamps[{}].numpy(), dims, num_threads]".format(stamp_id, stamp_id+1)
     code += "\n"
     code += offset + "csv_writer.writerow(event{})".format(stamp_id)
     code += "\n"
@@ -99,7 +104,7 @@ def generate_tf_linalg_cholesky(inp,out,stamp_id):
 
 if __name__ == '__main__':
 
-    for i in range(100):
+    for i in range(5):
         tf_path = "tf-code.py"
         julia_path = "algorithm{variant_number}.jl".format(variant_number = i)
 
@@ -128,7 +133,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_matmul_gemm(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "gemm")
                 id =id+1
                 code += "\n"
                 code1 += "\n"
@@ -142,7 +147,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_matmul_gemv(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "gemv")
                 id = id + 1
                 code += "\n"
                 code1 += "\n"
@@ -157,7 +162,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_matmul_trsm(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "trsm")
                 id = id + 1
                 code += "\n"
                 code1 += "\n"
@@ -172,7 +177,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_matmul_trsv(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "trsv")
                 id = id + 1
                 code += "\n"
                 code1 += "\n"
@@ -185,7 +190,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_matmul_syrk(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "syrk")
                 id = id + 1
                 code += "\n"
                 code1 += "\n"
@@ -201,7 +206,7 @@ if __name__ == '__main__':
                 print(out)
 
                 code += generate_tf_linalg_cholesky(inp,out,id)
-                code1 += event_log_activity_labels(id)
+                code1 += event_log_activity_labels(id, "LAPACK.potrf")
                 id = id + 1
                 code += "\n"
                 code1 += "\n"

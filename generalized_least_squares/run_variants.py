@@ -36,42 +36,43 @@ M = M + tf.transpose(M) + tf.eye(m, dtype=DTYPE) * m
 y = tf.random.normal([m, 1], dtype=DTYPE)
 
 
-import variants.variant1 as v1
-import variants.variant2 as v2
-import variants.variant3 as v3
-import variants.variant4 as v4
-import variants.variant5 as v5
+import variants_linnea.variants.Julia.generated.output_tf_0 as v0
+import variants_linnea.variants.Julia.generated.output_tf_1 as v1
+import variants_linnea.variants.Julia.generated.output_tf_2 as v2
+import variants_linnea.variants.Julia.generated.output_tf_3 as v3
+import variants_linnea.variants.Julia.generated.output_tf_4 as v4
+
 
 exp_start_time = tf.timestamp()
 
 for i in range(REPS):
-    b,timestamps = v1.run(X,M,y)
-    v1.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n],NUM_THREADS)
+    b,timestamps = v0.run(X,M,y)
+    v0.write_to_eventlog(csv_writer,exp_start_time,i,timestamps,[m,n],NUM_THREADS)
 
 print("Variant 1 done")
 
 
 for i in range(REPS):
+    b, timestamps = v1.run(X, M, y)
+    v1.write_to_eventlog(csv_writer, exp_start_time, i, timestamps, [m, n], NUM_THREADS)
+
+print("Variant 2 done")
+
+for i in range(REPS):
     b, timestamps = v2.run(X, M, y)
     v2.write_to_eventlog(csv_writer, exp_start_time, i, timestamps, [m, n], NUM_THREADS)
 
-print("Variant 2 done")
+print("Variant 3 done")
 
 for i in range(REPS):
     b, timestamps = v3.run(X, M, y)
     v3.write_to_eventlog(csv_writer, exp_start_time, i, timestamps, [m, n], NUM_THREADS)
 
-print("Variant 3 done")
+print("Variant 4 done")
 
 for i in range(REPS):
     b, timestamps = v4.run(X, M, y)
     v4.write_to_eventlog(csv_writer, exp_start_time, i, timestamps, [m, n], NUM_THREADS)
-
-print("Variant 4 done")
-
-for i in range(REPS):
-    b, timestamps = v5.run(X, M, y)
-    v5.write_to_eventlog(csv_writer, exp_start_time, i, timestamps, [m, n], NUM_THREADS)
 
 print("Variant 5 done")
 
