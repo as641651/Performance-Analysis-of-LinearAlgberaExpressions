@@ -3,15 +3,21 @@ import tensorflow as tf
 
 
 def tf_matmul_trsm(inp1, inp2, out):
-    out = tf.matmul(inp2, tf.linalg.inv(tf.transpose(inp1)))
+    out = tf.matmul(inp2, tf.linalg.inv(inp1))
+    # out = tf.matmul(inp2, tf.linalg.inv(tf.transpose(inp1)))
+    # out = tf.matmul(tf.linalg.inv(inp1), inp2)
+    # out = tf.matmul(tf.linalg.inv(tf.transpose(inp1)), inp2)
     return out
 
 
 if __name__ == "__main__":
+    # This function finds the solution to A*X = alpha*B
+    # The are a total of 4 variations:
+    # A could be in its initial form or transposed.
+    # We could have either A*X or X*A
     # inp: for simplicity we assume for now that both input matrices are squared matrices.
-    # a full-rank matrix is multiplied with an inverse transpose of a lower-triangular matrix.
-    # inp1: lower triangular:
-    # inp2: full rank:
+    # inp1: Matrix A is a lower triangular matrix
+    # inp2: Matrix B is a full rank matrix
     n = 100
     inp1 = tf.random.normal([n, n], dtype=tf.float64)
     inp1 = tf.linalg.band_part(inp1, -1, 0)

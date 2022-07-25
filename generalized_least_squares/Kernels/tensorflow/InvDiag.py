@@ -8,7 +8,8 @@ def VecInv(inp1, inp2, out):
 
 
 if __name__ == "__main__":
-    # This function multiplies the inverse of a vector with a matrix and overwrites the matrix.
+    # This function multiplies the inverse of a diagonal matrix with a full rank matrix
+    #   and overwrites the full rank matrix.
     # inp : The two inputs are a diagonal matrix and a full matrix:
     n = 100
     inp1 = tf.random.normal([n, n], dtype=tf.float64)

@@ -8,7 +8,7 @@ def tf_linalg_cholesky(inp, out):
 
 
 if __name__ == "__main__":
-    # inp: The input is a spd matrix. For simplicity, it is assumed to be a squared matrix.
+    # inp: The input is a spd matrix.
     # The input is decomposed with Cholesky factorization.
     n = 100
     inp = tf.random.normal([n, n], dtype=tf.float64)

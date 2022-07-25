@@ -9,7 +9,7 @@ def tf_linalg_eigh(inp, out1, out2):
 
 if __name__ == "__main__":
     # inp: The input matrix is a symmetric squared matrix
-    # This function applies eigen-decomposition  of the input matrix
+    # This function applies eigen-decomposition of the input matrix
     n = 100
     inp = tf.random.normal([n, n], dtype=tf.float64)
     inp = tf.matmul(inp, tf.transpose(inp))
